@@ -16,8 +16,8 @@ type Communication struct {
 	CancelSubscription func(msg *messaging.Message)
 }
 
-// Handler -
-var Handler = func() *Communication {
+// Comms -
+var Comms = func() *Communication {
 	return &Communication{
 		Notify: func(msg *messaging.Message) {
 			agent.notify(msg)

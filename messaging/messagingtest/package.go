@@ -6,8 +6,8 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
-// Handler -
-var Handler = func() *center.Communication {
+// Comms -
+var Comms = func() *center.Communication {
 	return &center.Communication{
 		Notify: func(msg *messaging.Message) {
 			fmt.Printf("%v\n", msg)
