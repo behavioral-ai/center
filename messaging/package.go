@@ -4,6 +4,11 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
+const (
+	ServiceName = "service"
+	//srvNID      = "core:service"
+)
+
 // Notifications from agents:
 //  1. Status - some error that needs triage or awareness
 //  2. Event - some event needs to be raised for a single member, or member listeners.

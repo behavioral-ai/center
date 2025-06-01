@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	//NamespaceName = "core:type/repository/origin"
+	NIDKey        = "nid"
 	RegionKey     = "region"
 	ZoneKey       = "zone"
 	SubZoneKey    = "sub-zone"
@@ -17,6 +17,7 @@ const (
 
 // Origin - location
 type Origin struct {
+	NID        string `json:"nid"`
 	Region     string `json:"region"`
 	Zone       string `json:"zone"`
 	SubZone    string `json:"sub-zone"`
@@ -28,8 +29,9 @@ func (o Origin) Uri(class string) string {
 	return fmt.Sprintf(uriFmt, class, o)
 }
 
-func (o Origin) String() string {
-	var uri = o.Region
+func (o Origin) String() string { return o.Name() }
+
+/*var uri = o.Region
 
 	if o.Zone != "" {
 		uri += "." + o.Zone
@@ -43,10 +45,38 @@ func (o Origin) String() string {
 	return uri
 }
 
+*/
+
+func (o Origin) Name() string {
+	var name = o.NID + ":" + ServiceName
+
+	if o.Region != "" {
+		name += "/" + o.Region
+	}
+	if o.Zone != "" {
+		name += "/" + o.Zone
+	}
+	if o.SubZone != "" {
+		name += "/" + o.SubZone
+	}
+	if o.Host != "" {
+		name += "/" + o.Host
+	}
+	if o.InstanceId != "" {
+		name += "#" + o.InstanceId
+	}
+	return name
+}
+
 func NewOriginFromMessage(m *messaging.Message) (o Origin, ok bool) {
 	cfg := messaging.ConfigMapContent(m)
 	if cfg == nil {
 		messaging.Reply(m, messaging.ConfigEmptyMapError(NamespaceName), NamespaceName)
+		return
+	}
+	o.NID = cfg[NIDKey]
+	if o.NID == "" {
+		messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, NIDKey), NamespaceName)
 		return
 	}
 	o.Region = cfg[RegionKey]
@@ -54,7 +84,6 @@ func NewOriginFromMessage(m *messaging.Message) (o Origin, ok bool) {
 		messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, RegionKey), NamespaceName)
 		return
 	}
-
 	o.Zone = cfg[ZoneKey]
 	if o.Zone == "" {
 		messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, ZoneKey), NamespaceName)
