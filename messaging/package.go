@@ -1,6 +1,8 @@
 package messaging
 
-import "github.com/behavioral-ai/core/messaging"
+import (
+	"github.com/behavioral-ai/core/messaging"
+)
 
 // Notifications from agents:
 //  1. Status - some error that needs triage or awareness
@@ -14,6 +16,7 @@ type Communication struct {
 	Respond            func(msg *messaging.Message)
 	Subscribe          func(msg *messaging.Message)
 	CancelSubscription func(msg *messaging.Message)
+	Trace              func(name, task, observation, action string)
 }
 
 // Comms -
@@ -36,6 +39,9 @@ var Comms = func() *Communication {
 		},
 		CancelSubscription: func(msg *messaging.Message) {
 			agent.cancel(msg)
+		},
+		Trace: func(name, task, observation, action string) {
+			agent.trace(name, task, observation, action)
 		},
 	}
 }()

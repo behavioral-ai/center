@@ -12,7 +12,9 @@ var (
 	agent *agentT
 )
 
-type agentT struct{}
+type agentT struct {
+	origin Origin
+}
 
 func NewAgent() *agentT {
 	agent = new(agentT)
@@ -30,6 +32,7 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
+	// Create origin
 	if m.Name == messaging.ConfigEvent {
 
 	}
@@ -54,6 +57,9 @@ func (a *agentT) subscribe(m *messaging.Message) {
 }
 
 func (a *agentT) cancel(m *messaging.Message) {
+}
+
+func (a *agentT) trace(name, task, observation, action string) {
 }
 
 /*
